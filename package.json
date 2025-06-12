@@ -9,7 +9,7 @@
     "build": "webpack --config webpack.prod.js",
     "dev": "webpack serve --config webpack.dev.js",
     "sync:main": "git checkout gh-pages && git merge main --no-edit && npm run build",
-    "deploy:all": "git add dist -f && git commit -m \"Deployment commit\" && git push origin main && git subtree push --prefix dist origin gh-pages && git checkout main"  
+    "deploy:all": "git checkout gh-pages && npm run build && git add dist -f && git commit -m \"Deployment commit\" && git push origin gh-pages && git subtree push --prefix dist origin gh-pages && git checkout main"
   },
   "repository": {
     "url": "git+https://github.com/Hassan-N-Khan/todo-list.git"
