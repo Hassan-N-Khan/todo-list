@@ -1,3 +1,10 @@
 import "./styles.css";
+import { setupAddProjectButton } from "./buttons.js"
+import { dialogButtons } from "./buttons.js";
 
-console.log("Hello, World!");
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupAddProjectButton();
+  dialogButtons();
+});
+
