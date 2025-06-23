@@ -1,8 +1,7 @@
 import { displayProjects } from "./dom.js";
 import Project from "./projects.js";
-import { setCurrentProject } from "./state.js";
 import { displayTasks } from "./dom.js";
-import { getCurrentProject } from "./state.js";
+import { getCurrentProject, setCurrentProject} from "./state.js";
 
 export const projects = [];
 
@@ -18,13 +17,44 @@ export function setupAddProjectButton() {
                 setCurrentProject(newProject); // ✅ set as current
                 projectInput.value = '';
                 console.log(`Project added: ${projectName}`);
+
+                displayProjects();
             } else {
                 console.log('Please enter a valid project name.');
             }
         }
-        displayProjects();
     });
 }
+
+export function setupEditProjectButtons() {
+    document.querySelectorAll('.edit-project-button').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
+            const index = parseInt(button.id.replace('edit-button', ''), 10);
+            if (!isNaN(index)) {
+                const project = projects[index];
+                const input = document.querySelector('#project-title-input');
+                const dialogEditTitle = document.querySelector('#edit-title-dialog');
+                input.value = project.getTitle();
+                dialogEditTitle.showModal();
+
+                const form = document.querySelector('#edit-title-form');
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    const newTitle = input.value.trim();
+                    if (newTitle) {
+                        project.setTitle(newTitle);
+                        displayProjects(); // will re-attach listeners
+                        dialogEditTitle.close();
+                    } else {
+                        console.log('Invalid title');
+                    }
+                };
+            }
+        });
+    });
+}
+
 
 export function setupDeleteProjectButtons() {
     document.querySelectorAll('.delete-project-button').forEach((button) => {
@@ -35,41 +65,49 @@ export function setupDeleteProjectButtons() {
                 projects.splice(index, 1);
                 displayProjects();
             }
+            if (projects.length === 0) {
+                setCurrentProject(null); // Clear current project if no projects left
+                displayTasks(null); // Clear tasks display
+            }
+            console.log(`Project at index ${index} deleted.`);
         });
     });
 }
 
-export function dialogButtons(currentProject) {
+export function dialogButtons() {
+    const dialog = document.querySelector('#add-todo-dialog');
     const addTaskButton = document.querySelector('.add-todo-button');
-    const dialog = document.querySelector("dialog");
+
     addTaskButton.addEventListener('click', () => {
+        if (projects.length === 0) {
+            alert("Please add a project first.");
+            return;
+        }
         dialog.showModal();
     });
 
-    const form = document.querySelector("form");
     const closeDialogButton = document.querySelector('.close');
     closeDialogButton.addEventListener('click', () => {
-        form.reset(); // Reset the form fields
+        document.querySelector('#add-task-form').reset();
         dialog.close();
     });
 
-    const submitButton = document.querySelector('.submit');
-    submitButton.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent the default form submission
-        if (!form.checkValidity()) {
-            return; // Stop here if the form is invalid
-        }
+    const form = document.querySelector('#add-task-form');
+    form.onsubmit = (e) => {
+        e.preventDefault();
+
+        if (!form.checkValidity()) return;
+
         const taskTitle = document.querySelector('#todo-title').value;
         const taskDescription = document.querySelector('#todo-description').value;
         const taskDueDate = document.querySelector('#todo-date').value;
-        const taskPriority = document.querySelector('.todo-priority-input').value;
+        const taskPriority = document.querySelector('#priority').value;
 
-        // Assuming you have a function to handle adding tasks
-        currentProject.addTask(taskTitle, taskDescription, taskDueDate, taskPriority);
+        getCurrentProject().addTask(taskTitle, taskDescription, taskDueDate, taskPriority);
         form.reset();
         dialog.close();
+        displayTasks(getCurrentProject());
 
-        displayTasks(getCurrentProject()); // Display tasks for the current project
-        console.log("displayTasks called for the current project is named: " + getCurrentProject().getTasks());
-    });
+        console.log("Tasks:", getCurrentProject().getTasks());
+    };
 }

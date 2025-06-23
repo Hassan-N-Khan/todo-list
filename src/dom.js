@@ -1,19 +1,21 @@
 import { setupDeleteProjectButtons } from "./buttons.js";
 import {projects} from "./buttons.js";
 import deleteIcon from '../images/deleteButton.png';
-import { dialogButtons } from "./buttons.js";
+import editIcon from '../images/editIcon.png';
 import { getCurrentProject, setCurrentProject } from "./state.js";
+import { setupEditProjectButtons } from "./buttons.js";
 
 export function displayProjects() {
-    const currentProject = getCurrentProject() || projects[projects.length - 1]; // Default to the last project
     const projectList = document.querySelector('.project-list');
     projectList.innerHTML = ""; // clear previous projects
+    const projectTitleHeader = document.querySelector('.project-title');
 
     projects.forEach((element, index) => {
         const projectItem = document.createElement("div");
         projectItem.classList.add("project-item");
 
         projectItem.innerHTML = `<button id="project${index}" class="project-title-button"><span class="project-title">${element.getTitle()}</span></button>
+                <button class="edit-project-button" id="edit-button${index}"><img src="${editIcon}" alt="create-new"/></button>
                 <button class="delete-project-button" id="button${index}"><img src="${deleteIcon}"></button>`;
         projectList.appendChild(projectItem);
     });
@@ -26,14 +28,18 @@ export function displayProjects() {
             if (!isNaN(index)) {
                 setCurrentProject(projects[index]);
 
-                dialogButtons(getCurrentProject()); // Setup dialog buttons for adding tasks
                 console.log("Current project:", getCurrentProject().getTitle());
             }
             displayTasks(getCurrentProject()); // Display tasks for the current project
         });
     });
-    dialogButtons(currentProject); // Setup dialog buttons for adding tasks
-    displayTasks(currentProject); // Display tasks for the current project
+
+    projectTitleHeader.textContent = getCurrentProject().getTitle(); // Update the project title header
+    if(projects.length === 0) {
+        projectTitleHeader.textContent = ""; // Set default text if no projects
+    }
+    setupEditProjectButtons();
+    displayTasks(getCurrentProject()); // Display tasks for the current project
     setupDeleteProjectButtons();
 }
 
@@ -41,7 +47,6 @@ export function displayProjects() {
 export function displayTasks(currentProject) {
     const taskList = document.querySelector('.todo-list');
     taskList.innerHTML = ""; // clear previous tasks
-
     if (!getCurrentProject() || !getCurrentProject().getTasks()) {
         return; // No tasks to display
     }
@@ -61,8 +66,8 @@ export function displayTasks(currentProject) {
                             <div class="taskDatePriority">
                                 <p id="taskDueDate">${task.getDueDate()}</p>
                                 <p id="taskPriority">${task.getPriority()} Priority</p>
-                                <button class="editTaskBtn" data-task-btn="${index}">edit</button>
-                                <button class="taskDeleteBtn" data-task-btn="${index}"><img src="../images/deleteButton.png" style="height:20px; width:20px;"></button>
+                                <button class="editTaskBtn" data-task-btn="${index}"><img src="${editIcon}"></button>
+                                <button class="taskDeleteBtn" data-task-btn="${index}"><img src="${deleteIcon}"></button>
                             </div>
                         </div>
                         </ul>`;
