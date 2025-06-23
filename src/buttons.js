@@ -1,6 +1,8 @@
 import { displayProjects } from "./dom.js";
 import Project from "./projects.js";
-import addTaskToProject from "./tasks.js";
+import { setCurrentProject } from "./state.js";
+import { displayTasks } from "./dom.js";
+import { getCurrentProject } from "./state.js";
 
 export const projects = [];
 
@@ -11,8 +13,9 @@ export function setupAddProjectButton() {
         if(projectInput!=null){
             const projectName = projectInput.value.trim();
             if (projectName) {
-                
-                projects.push(new Project(projectName)); // assuming Project is a class that takes a name
+                const newProject = new Project(projectName); // Create a new project with the name
+                projects.push(newProject); // assuming Project is a class that takes a name
+                setCurrentProject(newProject); // ✅ set as current
                 projectInput.value = '';
                 console.log(`Project added: ${projectName}`);
             } else {
@@ -36,7 +39,7 @@ export function setupDeleteProjectButtons() {
     });
 }
 
-export function dialogButtons() {
+export function dialogButtons(currentProject) {
     const addTaskButton = document.querySelector('.add-todo-button');
     const dialog = document.querySelector("dialog");
     addTaskButton.addEventListener('click', () => {
@@ -62,8 +65,11 @@ export function dialogButtons() {
         const taskPriority = document.querySelector('.todo-priority-input').value;
 
         // Assuming you have a function to handle adding tasks
-        new addTaskToProject(taskTitle, taskDescription, taskDueDate, taskPriority);
+        currentProject.addTask(taskTitle, taskDescription, taskDueDate, taskPriority);
         form.reset();
         dialog.close();
+
+        displayTasks(getCurrentProject()); // Display tasks for the current project
+        console.log("displayTasks called for the current project is named: " + getCurrentProject().getTasks());
     });
 }

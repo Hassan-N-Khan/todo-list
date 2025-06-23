@@ -181,11 +181,17 @@ button.submit{
     font-size: large;
 }
 
+ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .taskContainer{
     background-color: #222831;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap:20px;
+    gap: 20px;
     padding: 20px;
     border-radius: 5px;
     margin-bottom: 20px;

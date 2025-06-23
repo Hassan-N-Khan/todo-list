@@ -1,3 +1,5 @@
+import createTask from "./tasks";
+
 class Project{
 
     constructor(title) {
@@ -11,6 +13,25 @@ class Project{
         this.title = title;
     }
     
+    addTask(title, description, dueDate, priority) {
+        if (!this.tasks) {
+            this.tasks = [];
+        }
+        const task = new createTask(title, description, dueDate, priority);
+        this.tasks.push(task);
+    }
+    getTasks() {
+        return this.tasks || [];
+    }
+    removeTask(index) {
+        if (this.tasks && index >= 0 && index < this.tasks.length) {
+            this.tasks.splice(index, 1);
+        }
+    }
+    clearTasks() {
+        this.tasks = [];
+    }
+
 }
 
 export default Project;
