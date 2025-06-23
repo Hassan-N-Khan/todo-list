@@ -3,7 +3,7 @@ import {projects} from "./buttons.js";
 import deleteIcon from '../images/deleteButton.png';
 import editIcon from '../images/editIcon.png';
 import { getCurrentProject, setCurrentProject } from "./state.js";
-import { setupEditProjectButtons } from "./buttons.js";
+import { setupEditProjectButtons, editTask } from "./buttons.js";
 
 export function displayProjects() {
     const projectList = document.querySelector('.project-list');
@@ -38,6 +38,9 @@ export function displayProjects() {
     if(projects.length === 0) {
         projectTitleHeader.textContent = ""; // Set default text if no projects
     }
+
+
+
     setupEditProjectButtons();
     displayTasks(getCurrentProject()); // Display tasks for the current project
     setupDeleteProjectButtons();
@@ -73,4 +76,10 @@ export function displayTasks(currentProject) {
                         </ul>`;
         taskList.appendChild(taskItem);
     });
+        const editTaskButtons = document.querySelectorAll('.editTaskBtn');
+        editTaskButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                editTask(index);
+            });
+        });
 }

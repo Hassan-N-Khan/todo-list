@@ -75,39 +75,87 @@ export function setupDeleteProjectButtons() {
 }
 
 export function dialogButtons() {
-    const dialog = document.querySelector('#add-todo-dialog');
     const addTaskButton = document.querySelector('.add-todo-button');
+    const dialog = document.querySelector("#add-todo-dialog");
+    const form = document.querySelector("#add-task-form");
+
+    const titleInput = document.querySelector('#todo-title');
+    const descriptionInput = document.querySelector('#todo-description');
+    const dateInput = document.querySelector('#todo-date');
+    const priorityInput = document.querySelector('#priority');
+
+    const editModeInput = document.querySelector('#edit-mode');
+    const editIndexInput = document.querySelector('#edit-index');
 
     addTaskButton.addEventListener('click', () => {
-        if (projects.length === 0) {
+        if (getCurrentProject() == null) {
             alert("Please add a project first.");
             return;
         }
+
+        // Reset form
+        form.reset();
+        editModeInput.value = "add"; // Set to add mode
+        editIndexInput.value = "";
+
         dialog.showModal();
     });
 
-    const closeDialogButton = document.querySelector('.close');
-    closeDialogButton.addEventListener('click', () => {
-        document.querySelector('#add-task-form').reset();
-        dialog.close();
-    });
-
-    const form = document.querySelector('#add-task-form');
-    form.onsubmit = (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-
         if (!form.checkValidity()) return;
 
-        const taskTitle = document.querySelector('#todo-title').value;
-        const taskDescription = document.querySelector('#todo-description').value;
-        const taskDueDate = document.querySelector('#todo-date').value;
-        const taskPriority = document.querySelector('#priority').value;
+        const mode = editModeInput.value;
+        const taskTitle = titleInput.value;
+        const taskDescription = descriptionInput.value;
+        const taskDueDate = dateInput.value;
+        const taskPriority = priorityInput.value;
 
-        getCurrentProject().addTask(taskTitle, taskDescription, taskDueDate, taskPriority);
+        const currentProject = getCurrentProject();
+
+        if (mode === "edit") {
+            const index = parseInt(editIndexInput.value, 10);
+            const task = currentProject.getTasks()[index];
+            if (task) {
+                task.setTitle(taskTitle);
+                task.setDescription(taskDescription);
+                task.setDueDate(taskDueDate);
+                task.setPriority(taskPriority);
+            }
+        } else {
+            // Default mode: add
+            currentProject.addTask(taskTitle, taskDescription, taskDueDate, taskPriority);
+        }
+
         form.reset();
         dialog.close();
-        displayTasks(getCurrentProject());
+        displayTasks(currentProject);
+    });
 
-        console.log("Tasks:", getCurrentProject().getTasks());
-    };
+    // Close button
+    document.querySelector('#close-dialog-button').addEventListener('click', () => {
+        form.reset();
+        dialog.close();
+    });
 }
+
+
+export function editTask(index) {
+    const task = getCurrentProject().getTasks()[index];
+    if (!task) return;
+
+    const dialog = document.querySelector('#add-todo-dialog');
+
+    // Prefill form
+    document.querySelector('#todo-title').value = task.getTitle();
+    document.querySelector('#todo-description').value = task.getDescription();
+    document.querySelector('#todo-date').value = task.getDueDate();
+    document.querySelector('#priority').value = task.getPriority();
+
+    // ✅ Set mode to edit
+    document.querySelector('#edit-mode').value = 'edit';
+    document.querySelector('#edit-index').value = index;
+
+    dialog.showModal();
+}
+
