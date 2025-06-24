@@ -17,7 +17,7 @@ class Project{
         if (!this.tasks) {
             this.tasks = [];
         }
-        const task = new createTask(title, description, dueDate, priority);
+        const task = new createTask(title, description, dueDate, priority, false); // default completed to false
         this.tasks.push(task);
     }
     getTasks() {

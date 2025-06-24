@@ -72,7 +72,9 @@ export function displayTasks(currentProject) {
 
                             <div class="taskDatePriority">
                                 <p id="taskDueDate">${task.getDueDate()}</p>
-                                <p id="taskPriority">${task.getPriority().charAt(0).toUpperCase() + task.getPriority().slice(1)} Priority</p>
+                                <p id="taskPriority">${
+                                (task.getPriority() || "none").charAt(0).toUpperCase() + (task.getPriority() || "none").slice(1)
+                                } Priority</p>
                                 <button class="editTaskBtn" data-task-btn="${index}"><img src="${editIcon}"></button>
                                 <button class="taskDeleteBtn" data-task-btn="${index}"><img src="${deleteIcon}"></button>
                             </div>
