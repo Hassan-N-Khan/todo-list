@@ -1,34 +1,31 @@
-📝 To-Do List (with Webpack)
-A simple and responsive To-Do List web app built with vanilla JavaScript and bundled using Webpack. Users can create multiple projects, add tasks with details (title, description, due date, priority), and check them off once completed. All data is saved in localStorage, so it persists between sessions.
+# 📝 To-Do List (with Webpack)
 
-🚀 Features
-📁 Create and manage multiple projects
+[LIVE NOW](https://hassan-n-khan.github.io/todo-list/)
 
-✅ Add tasks with:
+A simple and responsive **To-Do List** web app built with **vanilla JavaScript** and **Webpack**. Organize your tasks by projects, set priorities, mark them as completed, and retain everything across sessions using `localStorage`.
 
-Title
+---
 
-Description
+## 🚀 Features
 
-Due Date
+- 📁 Create and manage multiple projects
+- 🧾 Add tasks with:
+  - Title
+  - Description
+  - Due Date
+  - Priority
+  - Completion checkbox
+- ✅ Mark tasks as complete (checkbox status is saved)
+- 🖊️ Edit or delete tasks and projects
+- 💾 Data is saved in `localStorage` to persist after refresh
+- ⚙️ Modular code structure using ES6 modules
+- ⚡ Bundled and optimized using **Webpack**
+- 🎨 Responsive and clean UI
 
-Priority
+---
 
-Completion state (checkbox)
+## 🛠️ Built With
 
-🗂 Tasks are grouped under projects
-
-🖊️ Edit or delete tasks and projects
-
-💾 Data persistence using localStorage
-
-⚡ Built and optimized with Webpack
-
-🎨 Responsive UI and clean layout
-
-🛠️ Tech Stack
-HTML5, CSS3, JavaScript (ES6+)
-
-Webpack for bundling and module management
-
-LocalStorage for client-side data persistence
+- HTML5, CSS3, JavaScript (ES6+)
+- Webpack (development & production builds)
+- LocalStorage API
