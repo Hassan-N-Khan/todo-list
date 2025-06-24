@@ -2,6 +2,7 @@ import { displayProjects } from "./dom.js";
 import Project from "./projects.js";
 import { displayTasks } from "./dom.js";
 import { getCurrentProject, setCurrentProject} from "./state.js";
+import { populateLocalStorage } from "./localStorage.js";
 
 export const projects = [];
 
@@ -19,10 +20,12 @@ export function setupAddProjectButton() {
                 console.log(`Project added: ${projectName}`);
 
                 displayProjects();
+                populateLocalStorage(projects); // Save updated projects array
             } else {
                 console.log('Please enter a valid project name.');
             }
         }
+
     });
 }
 
@@ -46,10 +49,13 @@ export function setupEditProjectButtons() {
                         project.setTitle(newTitle);
                         displayProjects(); // will re-attach listeners
                         dialogEditTitle.close();
+
+                        populateLocalStorage(projects); // Save updated projects array
                     } else {
                         console.log('Invalid title');
                     }
                 };
+
             }
         });
     });
@@ -64,13 +70,16 @@ export function setupDeleteProjectButtons() {
             if (!isNaN(index)) {
                 projects.splice(index, 1);
                 displayProjects();
+                populateLocalStorage(projects); // Save updated projects array
             }
             if (projects.length === 0) {
                 setCurrentProject(null); // Clear current project if no projects left
                 displayTasks(null); // Clear tasks display
+                populateLocalStorage(projects); // Save updated projects array
             }
             console.log(`Project at index ${index} deleted.`);
         });
+
     });
 }
 
@@ -130,6 +139,7 @@ export function dialogButtons() {
         form.reset();
         dialog.close();
         displayTasks(currentProject);
+        populateLocalStorage(projects); // Save updated projects array
     });
 
     // Close button
@@ -157,4 +167,5 @@ export function editTask(index) {
     document.querySelector('#edit-index').value = index;
 
     dialog.showModal();
+
 }

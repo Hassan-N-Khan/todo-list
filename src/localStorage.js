@@ -1,4 +1,6 @@
-function storageAvailable(type) {
+import Project from "./projects.js";
+
+export function storageAvailable(type) {
   let storage;
   try {
     storage = window[type];
@@ -15,4 +17,26 @@ function storageAvailable(type) {
       storage.length !== 0
     );
   }
+}
+
+export function populateLocalStorage(projects) {
+  if (storageAvailable("localStorage")) {
+    localStorage.setItem("projects", JSON.stringify(projects));
+  } else {
+    console.error("Local storage is not available.");
+  }
+}
+
+export function loadProjectsFromLocalStorage() {
+  const saved = localStorage.getItem("projects");
+  if (!saved) return [];
+
+  const parsed = JSON.parse(saved);
+  return parsed.map(projectData => {
+    const project = new Project(projectData.title); // or projectData.name depending on your class
+    projectData.tasks.forEach(task => {
+      project.addTask(task.title, task.description, task.dueDate, task.priority);
+    });
+    return project;
+  });
 }
