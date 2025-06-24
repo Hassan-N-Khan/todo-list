@@ -3,7 +3,7 @@ import {projects} from "./buttons.js";
 import deleteIcon from '../images/deleteButton.png';
 import editIcon from '../images/editIcon.png';
 import { getCurrentProject, setCurrentProject } from "./state.js";
-import { setupEditProjectButtons, editTask } from "./buttons.js";
+import { setupEditProjectButtons, editTask, setupDeleteTaskButtons} from "./buttons.js";
 
 export function displayProjects() {
     const projectList = document.querySelector('.project-list');
@@ -30,6 +30,8 @@ export function displayProjects() {
 
                 console.log("Current project:", getCurrentProject().getTitle());
             }
+
+            projectTitleHeader.textContent = getCurrentProject().getTitle(); // Update the project title header
             displayTasks(getCurrentProject()); // Display tasks for the current project
         });
     });
@@ -68,7 +70,7 @@ export function displayTasks(currentProject) {
 
                             <div class="taskDatePriority">
                                 <p id="taskDueDate">${task.getDueDate()}</p>
-                                <p id="taskPriority">${task.getPriority()} Priority</p>
+                                <p id="taskPriority">${task.getPriority().charAt(0).toUpperCase() + task.getPriority().slice(1)} Priority</p>
                                 <button class="editTaskBtn" data-task-btn="${index}"><img src="${editIcon}"></button>
                                 <button class="taskDeleteBtn" data-task-btn="${index}"><img src="${deleteIcon}"></button>
                             </div>
@@ -76,10 +78,22 @@ export function displayTasks(currentProject) {
                         </ul>`;
         taskList.appendChild(taskItem);
     });
-        const editTaskButtons = document.querySelectorAll('.editTaskBtn');
-        editTaskButtons.forEach((button, index) => {
-            button.addEventListener('click', () => {
-                editTask(index);
-            });
+    const editTaskButtons = document.querySelectorAll('.editTaskBtn');
+    editTaskButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            editTask(index);
         });
+    });
+
+    const deleteTaskButtons = document.querySelectorAll('.taskDeleteBtn');
+    deleteTaskButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const taskIndex = parseInt(button.getAttribute('data-task-btn'), 10);
+            const currentProject = getCurrentProject();
+            if (currentProject) {
+                currentProject.removeTask(taskIndex);
+                displayTasks(currentProject); // Refresh the task list
+            }
+        });
+    });
 }

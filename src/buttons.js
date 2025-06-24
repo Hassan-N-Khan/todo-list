@@ -158,4 +158,3 @@ export function editTask(index) {
 
     dialog.showModal();
 }
-
