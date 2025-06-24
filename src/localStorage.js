@@ -33,10 +33,19 @@ export function loadProjectsFromLocalStorage() {
 
   const parsed = JSON.parse(saved);
   return parsed.map(projectData => {
-    const project = new Project(projectData.title); // or projectData.name depending on your class
-    projectData.tasks.forEach(task => {
-      project.addTask(task.title, task.description, task.dueDate, task.priority);
-    });
+    const project = new Project(projectData.title);
+    // 🛡️ Only iterate if tasks exist and is an array
+    if (Array.isArray(projectData.tasks)) {
+      projectData.tasks.forEach(task => {
+        project.addTask(
+            task.title,
+            task.description,
+            task.dueDate,
+            task.priority,
+            task.completed ?? false // default to false if missing
+        );
+      });
+    }
     return project;
   });
 }

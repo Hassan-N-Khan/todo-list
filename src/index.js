@@ -7,11 +7,12 @@ import { setCurrentProject } from "./state.js";
 import { loadProjectsFromLocalStorage } from "./localStorage.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-
   const savedProjects = loadProjectsFromLocalStorage();
   if (savedProjects.length > 0) {
     savedProjects.forEach(p => projects.push(p));
     setCurrentProject(projects[0]);
+    console.log('Loaded projects:', projects);
+
   } else {
     const newProject = new Project("Default Project");
     setCurrentProject(newProject);
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newProject.addTask("Another Task", "This is another task description.", "2024-01-15", "High");
     newProject.addTask("Third Task", "This is the third task description.", "2024-02-01", "Medium");
     projects.push(newProject); 
+    populateLocalStorage(projects); // Save the default project to local storage
   }
 
   displayProjects();

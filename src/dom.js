@@ -65,7 +65,7 @@ export function displayTasks(currentProject) {
         taskItem.innerHTML = `<ul class="task-card">
                         <div class="taskContainer" data-task-lists="">
                             <div>
-                                <input type="checkbox" name="tasks" id="task-${index}" class="checkBoxAlignment">
+                                <input type="checkbox" name="tasks" id="task-${index}" class="checkBoxAlignment" ${task.isCompleted() ? "checked" : ""}>
                                 <label for="task-${index}" style="text-decoration: none;">${task.getTitle()}</label>
                                 <p id="taskDescription">${task.getDescription()}</p>
                             </div>
@@ -79,6 +79,14 @@ export function displayTasks(currentProject) {
                         </div>
                         </ul>`;
         taskList.appendChild(taskItem);
+
+
+        const checkbox = taskItem.querySelector(`#task-${index}`);
+        checkbox.addEventListener('change', () => {
+            task.setCompleted(checkbox.checked);
+            populateLocalStorage(projects); // ✅ Save change
+        });
+
 
     });
     const editTaskButtons = document.querySelectorAll('.editTaskBtn');
